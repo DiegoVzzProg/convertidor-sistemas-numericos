@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/jquery-3.7.1.min.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body,
+        html {
+            background-color: #ffffff;
+            color: #ADB5BD;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bd {
+            border: 1px solid red;
+        }
+
+        .max-w {
+            max-width: 800px;
+        }
+
+        .max-h-700 {
+            max-height: 700px;
+        }
+
+        .font-size-responsive {
+            font-size: clamp(.8rem, 3vw, 1rem);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="d-flex p-4 w-100 justify-content-center h-100 align-items-center">
+        <div class="w-100 h-100 max-w max-h-700 d-flex align-items-center justify-content-center">
+            <div class="d-flex gap-2 flex-column w-100">
+                <div class="w-100 d-flex justify-content-start h-100 align-items-center fw-bold font-size-responsive">
+                    Escriba que número quiere convertir:
+                </div>
+                <div class="w-100 d-flex align-items-center">
+                    <div class="d-flex w-100 flex-column">
+                        <input type="text" name="" id="controlInput1" class="form-control text-uppercase"
+                            oninput="ValidaiconInput(this);">
+                    </div>
+                    <span class="h-100 px-lg-3 px-md-3 px-sm-1 px-1">
+                        =
+                    </span>
+                    <div class="w-100 d-flex">
+                        <input type="text" name="" id="controlInput2" class="form-control text-uppercase" disabled>
+                    </div>
+                </div>
+                <div class="w-100 d-flex justify-content-start h-100 align-items-center fw-bold font-size-responsive">
+                    Convertir:
+                </div>
+                <div class="w-100 d-flex align-items-center">
+                    <select class="form-select" aria-label="Default select example" id="ddlConvertidor1"
+                        onchange="cambio(this)">
+                        <option value="0" selected>Seleccionar</option>
+                        <option value="10">Decimal</option>
+                        <option value="16">Hexadecimal</option>
+                        <option value="2">Binario</option>
+                        <option value="8">Octal</option>
+                    </select>
+                    <span class="h-100 px-lg-3 px-md-3 px-sm-1 px-1">
+                        a
+                    </span>
+                    <select class="form-select" aria-label="Default select example" id="ddlConvertidor2"
+                        onchange="cambio(this)" disabled>
+                        <option value="0" selected>Seleccionar</option>
+                        <option value="10">Decimal</option>
+                        <option value="16">Hexadecimal</option>
+                        <option value="2">Binario</option>
+                        <option value="8">Octal</option>
+                    </select>
+                </div>
+                <div class="w-100">
+                    <button type="button" class="btn w-100 btn-secondary" onclick="Convertir()">
+                        Convertir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function ValidaiconInput(element) {
+
+            if (parseInt($("#ddlConvertidor1").val()) == 16) {
+                element.value = element.value.replace(/[^0-9A-Fa-f]/g, '')
+                return;
+            }
+
+            element.value = element.value.replace(/[^0-9]/g, '')
+
+        }
+
+        function cambio(element) {
+            if (element.id == "ddlConvertidor1") {
+                const options = element.querySelectorAll("option");
+                options.forEach((elementFor, index) => {
+
+                    const NoPuedeSerElMismo = $("#ddlConvertidor2")[0].querySelectorAll("option")[index];
+
+                    if ((element.value != 10 && element.value != 0) && index > 1) {
+                        $(NoPuedeSerElMismo).css({ display: 'none' })
+                        $("#ddlConvertidor2").val(10)
+                    }
+                    else {
+                        $("#ddlConvertidor2").val(0)
+                        $(NoPuedeSerElMismo).css({ display: 'block' })
+                    }
+                });
+                if (element.value == 10)
+                    $($("#ddlConvertidor2")[0].querySelectorAll("option")[1]).css({ display: 'none' })
+            }
+
+            if ($("#ddlConvertidor1").val() > 0)
+                $('#ddlConvertidor2').removeAttr('disabled');
+            else
+                $('#ddlConvertidor2').prop('disabled', true);
+        }
+
+        function Convertir() {
+            let controlInput1 = $("#controlInput1").val();
+            if (controlInput1 == "") {
+                alert("Debe escribir un número antes de convertirlo a otro sistema numerico.")
+                return;
+            }
+
+            let convertidor1 = parseInt($("#ddlConvertidor1").val());
+            let convertidor2 = parseInt($("#ddlConvertidor2").val());
+
+            if (convertidor1 == 0 || convertidor2 == 0) {
+                alert("Debe seleccionar a qué desea convertir antes de continuar.")
+                return;
+            }
+
+            let valorConvertido = 0;
+
+            if (convertidor1 == 16 || convertidor1 == 8 || convertidor1 == 2) {
+                valorConvertido = parseInt(controlInput1, convertidor1)
+            } else {
+                valorConvertido = parseInt(controlInput1).toString(convertidor2);
+            }
+
+            $("#controlInput2").val(valorConvertido)
+        }
+    </script>
+</body>
+
+</html>
