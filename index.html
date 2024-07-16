@@ -136,6 +136,9 @@
                 $('#ddlConvertidor2').removeAttr('disabled');
             else
                 $('#ddlConvertidor2').prop('disabled', true);
+
+            if (element.value != 16)
+                $("#controlInput1").val($("#controlInput1")[0].value.replace(/[A-Fa-f]/g, ''))
         }
 
         function Convertir() {
@@ -145,8 +148,14 @@
                 return;
             }
 
+
             let convertidor1 = parseInt($("#ddlConvertidor1").val());
             let convertidor2 = parseInt($("#ddlConvertidor2").val());
+
+            if (convertidor1 == 2 && !/^[01]+$/.test(parseInt(controlInput1))) {
+                alert("Los valores binario solo permiten 2 numeros '1 y 0'")
+                return;
+            }
 
             if (convertidor1 == 0 || convertidor2 == 0) {
                 alert("Debe seleccionar a qué desea convertir antes de continuar.")
@@ -154,6 +163,7 @@
             }
 
             let valorConvertido = 0;
+
 
             if (convertidor1 == 16 || convertidor1 == 8 || convertidor1 == 2) {
                 valorConvertido = parseInt(controlInput1, convertidor1)
